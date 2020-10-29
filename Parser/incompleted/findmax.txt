@@ -1,0 +1,82 @@
+PROGRAM findMaxElements;
+CONST MAX = 100;
+VAR SIZE:INTEGER;
+TYPE T = INTEGER;
+VAR A : ARRAY(.MAX.) OF T;
+
+PROCEDURE INPUT;
+VAR I : INTEGER;
+BEGIN
+    SIZE := READI;
+    FOR I := 1 TO SIZE DO
+        A(.I.) := READI;
+END;
+
+PROCEDURE FINDMAXINDEXS;
+VAR I : INTEGER;
+VAR M : INTEGER;
+BEGIN
+    M := A(.1.);
+    FOR I := 2 TO SIZE DO
+      IF A(.I.) > M THEN
+        M := A(.I.);
+    FOR I := 1 TO SIZE DO 
+        IF A(.I.) = M THEN
+            WRITEI(I);
+END;
+
+BEGIN
+    CALL WRITEC('R');
+    CALL WRITEC('E');
+    CALL WRITEC('A');
+    CALL WRITEC('D');
+    CALL WRITEC(' ');
+    CALL WRITEC('N');
+    CALL WRITEC('U');
+    CALL WRITEC('M');
+    CALL WRITEC('B');
+    CALL WRITEC('E');
+    CALL WRITEC('R');
+    CALL WRITEC(' ');
+    CALL WRITEC('E');
+    CALL WRITEC('L');
+    CALL WRITEC('E');
+    CALL WRITEC('M');
+    CALL WRITEC('E');
+    CALL WRITEC('N');
+    CALL WRITEC('T');
+    CALL WRITELN;
+
+    CALL INPUT;
+
+    CALL WRITEC('T');
+    CALL WRITEC('H');
+    CALL WRITEC('E');
+    CALL WRITEC(' ');
+    CALL WRITEC('I');
+    CALL WRITEC('N');
+    CALL WRITEC('D');
+    CALL WRITEC('E');
+    CALL WRITEC('X');
+    CALL WRITEC(' ');
+    CALL WRITEC('O');
+    CALL WRITEC('F');
+    CALL WRITEC(' ');
+    CALL WRITEC('T');
+    CALL WRITEC('H');
+    CALL WRITEC('E');
+    CALL WRITEC(' ');
+    CALL WRITEC('M');
+    CALL WRITEC('A');
+    CALL WRITEC('X');
+    CALL WRITEC(' ');
+    CALL WRITEC('E');
+    CALL WRITEC('L');
+    CALL WRITEC('E');
+    CALL WRITEC('M');
+    CALL WRITEC('E');
+    CALL WRITEC('N');
+    CALL WRITEC('T');
+    CALL WRITELN;
+    CALL FINDMAXINDEXS;
+END.
