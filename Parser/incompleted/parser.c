@@ -631,7 +631,7 @@ void compileTerm2(void) {
     case KW_THEN:
         break;  
     default:
-      error(ERR_INVALIDFACTOR,lookAhead->lineNo,lookAhead->colNo);
+      error(ERR_INVALIDTERM,lookAhead->lineNo,lookAhead->colNo);
       break;
   }
 }
