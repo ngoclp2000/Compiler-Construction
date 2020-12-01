@@ -66,7 +66,7 @@ void freeType(Type* type) {
   // TODO
   if(type->typeClass == TP_ARRAY){
     freeType(type->elementType);
-    freeType(type);
+    free(type);
   }else free(type);
 }
 
@@ -258,7 +258,7 @@ void addObject(ObjectNode **objList, Object* obj) {
 
 Object* findObject(ObjectNode *objList, char *name) {
   // TODO
-  while(strcmp(objList->object->name,name) == 0){
+  while(strcmp(objList->object->name,name) != 0){
     objList = objList->next;
   }
   return objList->object;
