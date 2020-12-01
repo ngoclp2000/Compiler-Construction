@@ -213,6 +213,7 @@ void freeObject(Object* obj) {
     free(obj->varAttrs);
     break;
   }
+  free(obj);
 }
 
 void freeScope(Scope* scope) {
