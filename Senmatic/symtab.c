@@ -58,10 +58,8 @@ int compareType(Type* type1, Type* type2) {
       if(type1->arraySize == type2->arraySize)
         return compareType(type1->elementType,type2->elementType);
       return 0;
-    }
-    return 1;
-  }
-  return 0;
+    }else return 1;
+  }else return 0;
 }
 
 void freeType(Type* type) {
@@ -143,6 +141,7 @@ Object* createVariableObject(char *name) {
   strcpy(obj->name,name);
   obj->kind = OBJ_VARIABLE;
   obj->varAttrs = (VariableAttributes *) malloc(sizeof(VariableAttributes));
+  obj->varAttrs->scope = symtab->currentScope;
   return obj;
 }
 
@@ -152,6 +151,7 @@ Object* createFunctionObject(char *name) {
   strcpy(obj->name,name);
   obj->kind = OBJ_FUNCTION;
   obj->funcAttrs = (FunctionAttributes *) malloc(sizeof(FunctionAttributes));
+  obj->funcAttrs->scope = createScope(obj,symtab->currentScope);
   return obj;
 }
 
@@ -161,6 +161,8 @@ Object* createProcedureObject(char *name) {
   strcpy(obj->name,name);
   obj->kind = OBJ_PROCEDURE;
   obj->procAttrs = (ProcedureAttributes *) malloc(sizeof(ProcedureAttributes));
+  obj->procAttrs->paramList = NULL;
+  obj->procAttrs->scope = createScope(obj,symtab->currentScope);
   return obj;
 }
 
@@ -170,6 +172,8 @@ Object* createParameterObject(char *name, enum ParamKind kind, Object* owner) {
   strcpy(obj->name,name);
   obj->kind = OBJ_PARAMETER;
   obj->paramAttrs = (ParameterAttributes *) malloc(sizeof(ParameterAttributes));
+  obj->paramAttrs->kind = kind;
+  obj->paramAttrs->function = owner;
   return obj;
 }
 
@@ -181,31 +185,31 @@ void freeObject(Object* obj) {
     free(obj->constAttrs);
     break;
     case OBJ_FUNCTION:
-    free(obj->funcAttrs->returnType);
-    free(obj->funcAttrs->scope);
-    free(obj->funcAttrs->paramList);
+    freeType(obj->funcAttrs->returnType);
+    freeScope(obj->funcAttrs->scope);
+    freeObjectList(obj->funcAttrs->paramList);
     free(obj->funcAttrs);
     break;
     case OBJ_PARAMETER:
-    free(obj->paramAttrs->type);
+    freeType(obj->paramAttrs->type);
     free(obj->paramAttrs);
     break;
     case OBJ_PROCEDURE:
-    free(obj->procAttrs->paramList);
-    free(obj->procAttrs->scope);
+    freeObjectList(obj->procAttrs->paramList);
+    freeScope(obj->procAttrs->scope);
     free(obj->procAttrs);
     break;
     case OBJ_PROGRAM:
-    free(obj->progAttrs->scope);
+    freeScope(obj->progAttrs->scope);
     free(obj->progAttrs);
     break;
     case OBJ_TYPE:
-    free(obj->typeAttrs->actualType);
+    freeType(obj->typeAttrs->actualType);
     free(obj->typeAttrs);
     break;
     case OBJ_VARIABLE:
-    free(obj->varAttrs->scope);
-    free(obj->varAttrs->type);
+    freeScope(obj->varAttrs->scope);
+    freeType(obj->varAttrs->type);
     free(obj->varAttrs);
     break;
   }
@@ -213,7 +217,7 @@ void freeObject(Object* obj) {
 
 void freeScope(Scope* scope) {
   // TODO
-  freeScope(scope->objList);
+  freeObjectList(scope->objList);
   free(scope);
 }
 
@@ -256,7 +260,7 @@ Object* findObject(ObjectNode *objList, char *name) {
   while(strcmp(objList->object->name,name) == 0){
     objList = objList->next;
   }
-  return objList;
+  return objList->object;
 }
 
 /******************* others ******************************/

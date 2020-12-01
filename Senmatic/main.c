@@ -50,7 +50,6 @@ int main() {
     obj = createParameterObject("p1", PARAM_VALUE, symtab->currentScope->owner);
     obj->paramAttrs->type = makeIntType();
     declareObject(obj);
-
     obj = createParameterObject("p2", PARAM_REFERENCE, symtab->currentScope->owner);
     obj->paramAttrs->type = makeCharType();
     declareObject(obj);
@@ -91,7 +90,6 @@ int main() {
     declareObject(obj);
 
     exitBlock();
-
 
   exitBlock();
   printObject(symtab->program,0);
