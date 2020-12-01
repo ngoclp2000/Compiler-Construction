@@ -37,7 +37,7 @@ void skipComment() {
   char previousChar = currentChar; 
   while(currentChar != EOF){ 
     // Read all comment content until get the *) if not it will read until end of file 
-    if(currentChar == ')' && previousChar == '*' ){
+    if(currentChar == '/' && previousChar == '*' ){
       readChar();
       return;
     }
@@ -46,6 +46,11 @@ void skipComment() {
   }
   // When get the EOF char, put the error message
   error(ERR_ENDOFCOMMENT,lineNo,colNo);
+}
+
+void skipComment2(){
+	while(currentChar != '\n')
+			readChar();
 }
 
 Token* readIdentKeyword(void) {
@@ -118,11 +123,12 @@ Token* readConstChar(void) {
   if(readChar() == 39 && isPrint){
     token = makeToken(TK_CHAR,ln,cn);
     strcpy(token->string,string);
-    readChar(); 
+    readChar();
     return token;
   }else{
     token = makeToken(TK_NONE,ln,cn);
     error(ERR_INVALIDCHARCONSTANT,ln,cn);
+    if(currentChar == 39) readChar();
     return token;
   }
 }
@@ -195,9 +201,13 @@ Token* getToken(void) {
       token = makeToken(SB_TIMES, lineNo, colNo);
       readChar();
       return token;
-      case CHAR_SLASH: 
+      case CHAR_SLASH:
+		readChar();
+		if( currentChar == '*'){
+			skipComment(); return getToken();
+		}else if(currentChar == '/') skipComment2(); return getToken();
       token = makeToken(SB_SLASH, lineNo, colNo);
-      readChar(); 
+      readChar();
       return token;
     case CHAR_EQ: 
       token = makeToken(SB_EQ, lineNo, colNo);
@@ -233,8 +243,6 @@ Token* getToken(void) {
         token = makeToken(SB_LSEL,ln,cn);
         readChar();
         return token;
-       }else if (currentChar == '*'){
-         skipComment(); return getToken();
        }else{
          token = makeToken(SB_LPAR,ln,cn);
          return token;

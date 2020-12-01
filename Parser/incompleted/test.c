@@ -120,9 +120,20 @@ void compileVarDecls(void) {
 void compileVarDecl(void) {
   // TODO
   eat(TK_IDENT);
+  compileVarDecl2();
   eat(SB_COLON);
   compileType();
   eat(SB_SEMICOLON);
+} 
+
+void compileVarDecl2(void){
+  switch(lookAhead->tokenType){
+    case SB_COMMA:
+      eat(SB_COMMA);
+      eat(TK_IDENT); 
+      compileVarDecl2();
+      break;
+  }
 }
 
 void compileSubDecls(void) {
@@ -320,7 +331,7 @@ void compileStatements2(void) {
 void compileStatement(void) {
   switch (lookAhead->tokenType) {
   case TK_IDENT:
-    eat(TK_IDENT);             
+    eat(TK_IDENT); 
     switch(lookAhead->tokenType){
         case SB_LSEL:
         case SB_ASSIGN:
@@ -328,19 +339,17 @@ void compileStatement(void) {
             break;
         case SB_SEMICOLON:
             break;
-        // case SB_COMMA:
-        //   compileArguments();
-        //   break;
+        case SB_COMMA:
+          compileArguments();
+          break;
         case SB_LPAR:
-            assert("Parsing a call assignment ....");
-            compileArguments();
-            assert("Parsed a call assignment ....");
+            compileArguments3();
             break;
     }
     break;
-//   case KW_CALL:
-//       error(ERR_INVALIDSTATEMENT, lookAhead->lineNo, lookAhead->colNo);
-//     break;
+  case KW_CALL:
+  compileCallSt();
+  break;
   case KW_BEGIN:
       compileGroupSt();
       break;
@@ -375,14 +384,14 @@ void compileAssignSt(void) {
   assert("Assign statement parsed ....");
 }
 
-// void compileCallSt(void) {
-//   assert("Parsing a call statement ....");
-//   // TODO
-//   //eat(KW_CALL);
-//   //eat(TK_IDENT);
-//   compileArguments();
-//   assert("Call statement parsed ....");
-// }
+void compileCallSt(void) {
+  assert("Parsing a call statement ....");
+  // TODO
+  eat(KW_CALL);
+  eat(TK_IDENT);
+  compileArguments3();
+  assert("Call statement parsed ....");
+}
 
 void compileGroupSt(void) {
   assert("Parsing a group statement ....");
@@ -437,45 +446,10 @@ void compileForSt(void) {
 void compileArguments(void) {
   // TODO
   switch(lookAhead->tokenType){
-    case SB_LPAR:
-      eat(SB_LPAR);
-      compileExpression();
-      compileArguments2();
-      eat(SB_RPAR);
-      break;
-    // 
-    case SB_SEMICOLON:
-    case KW_END:
-    case KW_ELSE:
-    //follow term2
-    case SB_TIMES:
-    case SB_SLASH:
-    // expression 3
-    case SB_PLUS:
-    case SB_MINUS:
-    // expression
-    case KW_TO:
-    case KW_DO:
     case SB_COMMA:
-    // Follow (condition2)
-    case SB_EQ:
-    case SB_NEQ:
-    case SB_LE:
-    case SB_LT:
-    case SB_GE:
-    case SB_GT:
-    // Follow (factor)
-    case SB_RPAR:
-    // Follow (indexes)
-    case SB_RSEL:
-    // Follow (if statement)
-    case KW_THEN:
-    //arguments2
-      break;
-    // Epsilon here
-    default:
-      error(ERR_INVALIDARGUMENTS,lookAhead->lineNo,lookAhead->colNo);
-  }
+    compileExpression();
+    compileArguments2();
+    break;
 }
 
 void compileArguments2(void) {
@@ -483,15 +457,54 @@ void compileArguments2(void) {
   switch (lookAhead->tokenType) {
     case SB_COMMA:
       eat(SB_COMMA);
-      compileExpression();
+      compileExpression(); 
       compileArguments2();
       break;
-    case SB_RPAR:
-      break;
+    case SB_SEMICOLON:
+    break;
   default:
       error(ERR_INVALIDARGUMENTS, lookAhead->lineNo, lookAhead->colNo);
       break;
   }
+}
+
+void compileArguments3(){
+    switch(lookAhead->tokenType ){
+        case SB_LPAR:
+            eat(SB_LPAR);
+            compileArguments4();
+            eat(SB_RPAR);
+        break;
+    }
+}
+
+void compileArguments4(){
+    switch(lookAhead->tokenType){
+        case SB_PLUS:
+        case SB_MINUS:
+        case TK_CHAR:
+        case TK_NUMBER:
+        case TK_IDENT:
+        case SB_LPAR:
+        compileExpression();
+        compileArguments5();
+        break;
+        default:
+        break;
+    }
+}
+
+void compileArguments5(){
+    switch(lookAhead->tokenType ){
+        case SB_COMMA:
+        eat(SB_COMMA);
+        compileExpression();
+        compileArguments5();
+        case SB_RPAR:
+        break;
+        default:
+        break;
+    }
 }
 
 void compileCondition(void) {

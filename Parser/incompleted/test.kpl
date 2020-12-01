@@ -1,0 +1,34 @@
+
+
+
+PROGRAM ASSIGNZERO;
+CONST MAX = 5;
+TYPE P = INTEGER;
+     T = ARRAY(.5.) OF P;
+VAR A : ARRAY(.5.) OF T;
+
+PROCEDURE INPUT;
+VAR I : INTEGER;
+    J : INTEGER;
+BEGIN
+    FOR I := 1 TO MAX DO
+        FOR J:=1 TO MAX DO
+            A(.I.)(.J.) := 0;
+END;
+
+PROCEDURE OUTPUT;
+VAR I:INTEGER;
+    J:INTEGER;
+BEGIN
+    FOR I := 1 TO MAX DO
+        FOR J :=1 TO MAX DO
+            BEGIN
+            CALL WRITE(A(.I.)(.J.));
+            CALL WRITELN;
+            END
+END;
+
+BEGIN
+    CALL INPUT;
+    CALL OUTPUT;
+END.
