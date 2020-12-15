@@ -103,6 +103,6 @@ Object* checkDeclaredLValueIdent(char* name) {
         break;
     }
   }else error(ERR_UNDECLARED_IDENT,currentToken->lineNo,currentToken->colNo);
-  
+  return obj;
 }
 
