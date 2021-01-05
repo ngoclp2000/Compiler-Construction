@@ -136,9 +136,10 @@ void checkTypeEquality(Type* type1, Type* type2) {
   if (type1->typeClass != type2->typeClass) {
     error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
   } else if (type1->typeClass == TP_ARRAY) {
-    checkTypeEquality(type1->elementType, type2->elementType);
     if (type1->arraySize != type2->arraySize)
       error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+    checkTypeEquality(type1->elementType, type2->elementType);
+    
   }
 }
 
