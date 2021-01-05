@@ -503,7 +503,6 @@ void compileForSt(void) {
 void compileArgument(Object* param) {
   // TODO: parse an argument, and check type consistency
   //       If the corresponding parameter is a reference, the argument must be a lvalue
-  //if(param->paramAttrs->kind == 0) printf("OK\n");
   if (param->paramAttrs->kind == PARAM_REFERENCE) {
     if (lookAhead->tokenType == TK_IDENT) {
         checkDeclaredLValueIdent(lookAhead->string);
@@ -751,7 +750,6 @@ Type* compileFactor(void) {
       break;
     case OBJ_FUNCTION:
     
-      printf("Function %d %d\n",currentToken->lineNo,currentToken->colNo);
       //checkBasicType(obj->funcAttrs->returnType);
       type = obj->funcAttrs->returnType;
       compileArguments(obj->funcAttrs->paramList);
